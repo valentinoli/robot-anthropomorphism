@@ -16,7 +16,7 @@ const context = {
 }
 
 server.get('/', (req, res) => {
-  const source = process.env.NODE_ENV === 'production' ? 'https://www.youtube.com/watch?v=Efx-J8fzlKo' : 'video.mp4';
+  const source = 'video.mp4'// process.env.NODE_ENV === 'production' ? 'https://www.youtube.com/watch?v=Efx-J8fzlKo' : 'video.mp4';
   const app = new Vue({
     template: `
       <div class="container-fluid">
@@ -64,9 +64,8 @@ server.post('/', (req, res) => {
 //   })
 // })
 
-const server_port = process.env.PORT;
-const server_ip_address = process.env.HOST;
+const port = process.env.PORT;
 
-server.listen(server_port, server_ip_address, () => {
-  console.log(`Listening on ${server_ip_address}, port ${server_port}`);
+server.listen(port, () => {
+  console.log(`Listening on port ${port}`);
 })
