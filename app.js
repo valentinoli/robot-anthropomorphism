@@ -64,7 +64,7 @@ server.post('/', (req, res) => {
 //   })
 // })
 
-const server_port = process.env.PORT
+const server_port = process.env.PORT;
 const server_ip_address = process.env.HOST;
 
 server.listen(server_port, server_ip_address, () => {
