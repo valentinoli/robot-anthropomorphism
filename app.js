@@ -1,6 +1,6 @@
 const Vue = require('vue')
 const express = require('express')
-var bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
 
 const server = express()
 const renderer = require('vue-server-renderer').createRenderer({
@@ -62,4 +62,9 @@ server.post('/', (req, res) => {
 //   })
 // })
 
-server.listen(8000)
+const server_port = process.env.OPENSHIFT_NODEJS_PORT || 8000
+const server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
+
+server.listen(server_port, server_ip_address, () => {
+  console.log(`Listening on ${server_ip_address}, port ${server_port}`);
+})

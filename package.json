@@ -2,6 +2,7 @@
   "name": "robot-anthropomorphism",
   "version": "1.0.0",
   "description": "Project in Experimental Cognitive Psychology. Predicting Anthropomorphic Attitudes towards Robots based on Facial Expressions",
+  "main": "app.js",
   "dependencies": {
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
@@ -15,7 +16,8 @@
     "webpack-cli": "^3.3.11"
   },
   "scripts": {
-    "start": "npm-run-all --parallel watch:server watch:build",
+    "dev": "npm-run-all --parallel watch:server watch:build",
+    "start": "node ./app.js",
     "watch:build": "webpack --watch",
     "watch:server": "nodemon ./app.js localhost 8000",
     "test": "echo \"Error: no test specified\" && exit 1"
