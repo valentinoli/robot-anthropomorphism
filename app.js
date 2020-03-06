@@ -16,11 +16,12 @@ const context = {
 }
 
 server.get('/', (req, res) => {
+  const source = process.env.NODE_ENV === 'production' ? 'https://www.youtube.com/watch?v=Efx-J8fzlKo' : 'video.mp4';
   const app = new Vue({
     template: `
       <div class="container-fluid">
         <div id="affdexElements"></div>
-        <video id="video" width="500px", height="281px" controls src="video.mp4"></video>
+        <video id="video" width="500px", height="281px" controls src="${source}"></video>
       </div>`
   })
 
