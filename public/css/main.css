@@ -41,5 +41,6 @@ body > .container-fluid {
 }
 
 #video {
-  margin-top: 150px;
+  width: 100%;
+  height: 100%;
 }

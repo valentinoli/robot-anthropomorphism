@@ -88,7 +88,7 @@ server.post('/', async (req, res) => {
     const json = JSON.stringify({ timestamps, data })
 
     const hash = require('crypto').createHash('md5').update(json).digest('hex')
-    await writeFileAsync(`./tmp/${hash}.txt`, json)
+    await writeFileAsync(`./python/data/${hash}.txt`, json)
 
     // Heroku dyno is ephemeral, consider using AWS S3 or Postgres
     // https://devcenter.heroku.com/articles/s3-upload-node
