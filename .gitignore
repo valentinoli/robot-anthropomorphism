@@ -1,1 +1,3 @@
 node_modules/
+!python/data/example.txt
+python/data/*.txt

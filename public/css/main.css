@@ -40,7 +40,8 @@ body > .container-fluid {
   height: 100%
 }
 
-#video {
+#video,
+#face_video {
   width: 100%;
   height: 100%;
 }

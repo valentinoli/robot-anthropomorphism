@@ -15,23 +15,27 @@ server.use(bodyParser.json({ limit: '20mb' }))  // Allow 20mb request body size
 server.use(express.static(__dirname + '/public'))
 server.use(require('serve-favicon')(path.join(__dirname, 'public', 'img', 'favicon.ico')))
 
+// Webcam version
+server.get('/webcam', (req, res) => {
+  const webcamAppContext = {
+    title: 'Webcam Facial Expression Tracker',
+    scripts: `
+      <script src='js/build/affdex.js'></script>
+      <script src='js/build/webcam.js'></script>
+    `,
+  }
 
-const context = {
-  title: 'Webcam Facial Expression Tracker',
-}
-
-server.get('/', (req, res) => {
-  const source = 'video.mp4'
+  const exampleVideoSource = 'video/video.mp4'
 
   const app = new Vue({
     template: `
       <div class="container-fluid">
         <div id="affdexElements"></div>
-        <video id="video" width="500px", height="281px" controls src="${source}"></video>
+        <video id="video" controls src="${exampleVideoSource}"></video>
       </div>`
   })
 
-  renderer.renderToString(app, context, (err, html) => {
+  renderer.renderToString(app, webcamAppContext, (err, html) => {
     if (err) {
       console.error(err)
       res.status(500).end('Internal Server Error')
@@ -40,6 +44,36 @@ server.get('/', (req, res) => {
     res.end(html)
   })
 })
+
+// Post processing app
+server.get('/', (req, res) => {
+  const videoProcessingAppContext = {
+    title: 'Video Facial Expression Processor',
+    scripts: `
+      <script src='js/build/affdex-edited-for-processing.js'></script>
+      <script src='js/build/post-processing.js'></script>
+    `,
+  }
+
+  const app = new Vue({
+    template: `
+      <div class="container-fluid">
+        <div id="affdexElements"></div>
+      </div>
+    `,
+  })
+
+  renderer.renderToString(app, videoProcessingAppContext, (err, html) => {
+    if (err) {
+      console.error(err)
+      res.status(500).end('Internal Server Error')
+      return
+    }
+    res.end(html)
+  })
+})
+
+/*** RESULT PROCESSING ***/
 
 function processResults(results) {
   // Function for processing results object
@@ -75,6 +109,7 @@ function processResults(results) {
   }
 }
 
+// Post results from AFFDEX SDK and process on the backend
 server.post('/', async (req, res) => {
   try {
     const {
@@ -90,11 +125,11 @@ server.post('/', async (req, res) => {
     const hash = require('crypto').createHash('md5').update(json).digest('hex')
     await writeFileAsync(`./python/data/${hash}.txt`, json)
 
-    // Heroku dyno is ephemeral, consider using AWS S3 or Postgres
+    // Unless running locally, the Heroku dyno is ephemeral, so consider using AWS S3 or Postgres
     // https://devcenter.heroku.com/articles/s3-upload-node
 
-    console.log(hash)
-    return res.json({ redirectUrl: `?id=${hash}` })
+    console.log(`JSON string hashed to: ${hash}`)
+    return res.json({ hash, redirectUrl: `?id=${hash}` })
 
   } catch (err) {
     console.log(err)

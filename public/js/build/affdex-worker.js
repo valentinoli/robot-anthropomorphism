@@ -42,7 +42,7 @@ var emojis = [ "relaxed", "smiley", "laughing", "kissing", "disappointed",
 
 function ctor(url) {
   try {
-    var URL = "https://download.affectiva.com/js/3.2.1/"  // Added 4 March 2020 by Valentin
+    var URL = "https://download.affectiva.com/js/3.2.1/"  // Added 4 March 2020 by Valentin, instead of using given url argument
     Module = Module || {
       "memoryInitializerPrefixURL": URL,  // changed reference 4 March 2020 by Valentin
       "filePackagePrefixURL": URL         // changed reference 4 March 2020 by Valentin

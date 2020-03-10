@@ -194,6 +194,7 @@ affdex.Detector = function() {
 //By children classes
 affdex.Detector.prototype.start = function() {
   if (!this.isRunning) {
+    // Edited by Valentin
     var url = "./js/build/"//affdex.getAffdexDotJsLocation();
     XHRWorker(url+"affdex-worker.js", function(worker) {
       this.worker = worker;
