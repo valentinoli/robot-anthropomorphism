@@ -68,9 +68,6 @@ detector.addEventListener("onStopSuccess", () => console.log("The detector repor
 // The faces object contains the list of the faces detected in an image.
 // Faces object contains probabilities for all the different expressions, emotions and appearance metrics
 detector.addEventListener("onImageResultsSuccess", function(faces, image, timestamp) {
-  // console.log(`Timestamp: ${timestamp}`);
-  // console.log(`Number of faces found: ${faces.length}`);
-
   if (faces.length > 0) {
     const {
       appearance,
@@ -91,29 +88,11 @@ detector.addEventListener("onImageResultsSuccess", function(faces, image, timest
   }
 });
 
-// // https://stackoverflow.com/questions/21012580/is-it-possible-to-write-data-to-file-using-only-javascript
-// let textFile = null;
-// const makeTextFile = function (res) {
-//   const data = new Blob([res], {type: 'text/plain'});
-//
-//   // If we are replacing a previously generated file we need to
-//   // manually revoke the object URL to avoid memory leaks.
-//   if (textFile !== null) {
-//     window.URL.revokeObjectURL(textFile);
-//   }
-//
-//   textFile = window.URL.createObjectURL(data);
-//
-//   // returns a URL you can use as a href
-//   return textFile;
-// };
-
 function toggleLoading() {
   const loadingEl = document.querySelector('.loading');
   loadingEl.style.display = loadingEl.style.display === 'flex' ? 'none': 'flex';
 }
 
-//function executes when the Stop button is pushed.
 function onStop() {
   if (detector && detector.isRunning) {
     detector.removeEventListener();
@@ -137,34 +116,27 @@ function onStop() {
     })
     .then(res => res.json())
     .then(json => {
+      const {
+        data,
+        hash,
+      } = json;
+
       results = [];
       timestamps = [];
       videoNames.shift();  // process next video
 
-      console.log(`Results from AFFDEX parsed successfully, saved in ${json.hash}.txt`);
+      console.log(`Results from AFFDEX parsed successfully, saved in ${hash}.txt`);
+      console.log(`Processed results:\n ${Object.entries(data.expressions).reduce((acc, [k, v]) => `${acc}${k}: ${v}\n\n`, '')}`);
+
       setTimeout(() => {
         toggleLoading();
         runNextVideo();
-      }, 4000);
+      }, 10000);
     })
     .catch(error => {
       toggleLoading();
       console.error(error);
     });
-
-    // // 4 March 2020 - Valentin
-    // // Write expression values to a text file
-    // const link = document.createElement('a');
-    // link.setAttribute('download', 'info.txt');
-    // link.href = makeTextFile(json);
-    // document.body.appendChild(link);
-    //
-    // // wait for the link to be added to the document
-    // window.requestAnimationFrame(function () {
-    //   const event = new MouseEvent('click');
-    //   link.dispatchEvent(event);
-    //   document.body.removeChild(link);
-    // });
   }
 };
 

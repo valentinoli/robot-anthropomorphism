@@ -25,7 +25,7 @@ server.get('/webcam', (req, res) => {
     `,
   }
 
-  const exampleVideoSource = 'video/video.mp4'
+  const exampleVideoSource = 'video/video1.mp4'
 
   const app = new Vue({
     template: `
@@ -129,37 +129,13 @@ server.post('/', async (req, res) => {
     // https://devcenter.heroku.com/articles/s3-upload-node
 
     console.log(`JSON string hashed to: ${hash}`)
-    return res.json({ hash, redirectUrl: `?id=${hash}` })
+    return res.json({ data, hash, redirectUrl: `?id=${hash}` })
 
   } catch (err) {
     console.log(err)
     return res.status(500).end("Internal Server Error")
   }
 })
-
-// server.get('*', (req, res) => {
-//   console.log('get')
-//   const app = new Vue({
-//     data: {
-//       url: req.url
-//     },
-//     template: `<div>The visited URL is: {{ url }}</div>`
-//   })
-//
-//   renderer.renderToString(app, (err, html) => {
-//     if (err) {
-//       res.status(500).end('Internal Server Error')
-//       return
-//     }
-//     res.end(`
-//       <!DOCTYPE html>
-//       <html lang="en">
-//         <head><title>Hello</title></head>
-//         <body>${html}</body>
-//       </html>
-//     `)
-//   })
-// })
 
 const { PORT } = process.env
 
