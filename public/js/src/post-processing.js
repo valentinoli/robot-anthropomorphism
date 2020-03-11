@@ -89,8 +89,25 @@ detector.addEventListener("onImageResultsSuccess", function(faces, image, timest
 });
 
 function toggleLoading() {
-  const loadingEl = document.querySelector('.loading');
+  const loadingEl = document.getElementById('loading');
   loadingEl.style.display = loadingEl.style.display === 'flex' ? 'none': 'flex';
+}
+
+function togglePlot() {
+  const plotDiv = document.getElementById('plot');
+  plotDiv.style.display = plotDiv.style.display === 'flex' ? 'none': 'flex';
+}
+
+function showPlot(x, yValues) {
+  const data = Object.entries(yValues).map(([key, val]) => ({
+    x,
+    y: val,
+    name: key.split(/(?=[A-Z])/).join(' ').toLowerCase(),  // camelCase --> camel case
+    mode: 'lines',
+    type: 'scatter',
+  }));
+
+  Plotly.newPlot('plot', data);
 }
 
 function onStop() {
@@ -117,7 +134,11 @@ function onStop() {
     .then(res => res.json())
     .then(json => {
       const {
-        data,
+        data: {
+          timestamps: stamps,
+          expressions,
+          emotions,
+        },
         hash,
       } = json;
 
@@ -126,12 +147,23 @@ function onStop() {
       videoNames.shift();  // process next video
 
       console.log(`Results from AFFDEX parsed successfully, saved in ${hash}.txt`);
-      console.log(`Processed results:\n ${Object.entries(data.expressions).reduce((acc, [k, v]) => `${acc}${k}: ${v}\n\n`, '')}`);
+      console.log(`Processed results:\n${Object.entries(expressions).reduce((acc, [k, v]) => `${acc}${k}: ${v}\n\n`, '')}`);
 
       setTimeout(() => {
         toggleLoading();
-        runNextVideo();
-      }, 10000);
+        // Plot emotions
+        togglePlot();
+        showPlot(stamps, emotions);
+        setTimeout(() => {
+          // Plot expressions
+          showPlot(stamps, expressions);
+          setTimeout(() => {
+            // Run next video
+            togglePlot()
+            runNextVideo();
+          }, 10000);
+        }, 10000);
+      }, 2500);
     })
     .catch(error => {
       toggleLoading();
