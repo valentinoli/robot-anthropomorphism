@@ -58,7 +58,13 @@ server.get('/', (req, res) => {
   const app = new Vue({
     template: `
       <div class="container-fluid">
-        <div id="affdexElements"></div>
+        <div id="affdexElements">
+			<div class="user-announcement">
+				<p>Welcome to the Video Facial Expression Processing site.</p>
+				<p>This demo shows how video of a face can be processed and facial features and emotions extracted by using the AFFDEX SDK</p>
+				<p><strong>Click anywhere to get started!</strong></p>
+			</div>
+		</div>
       </div>
     `,
   })

@@ -15,6 +15,8 @@ import videoNames from './video'
 
 function runNextVideo() {
   if (detector && !detector.isRunning && videoNames.length > 0) {
+	divRoot.removeChild(divRoot.firstChild)
+	  
     // Run start() in affdex-edited-for-processing.js
     // Creates video element and canvas element + context
     // Returns the video element. Doesn't really start the detector.
