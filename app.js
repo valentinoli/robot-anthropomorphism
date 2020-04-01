@@ -20,7 +20,7 @@ server.get('/webcam', (req, res) => {
   const webcamAppContext = {
     title: 'Webcam Facial Expression Tracker',
     scripts: `
-      <script src='js/build/affdex.js'></script>
+      <script src='js/affdex/affdex.js'></script>
       <script src='js/build/webcam.js'></script>
     `,
   }
@@ -50,7 +50,7 @@ server.get('/', (req, res) => {
   const videoProcessingAppContext = {
     title: 'Video Facial Expression Processor',
     scripts: `
-      <script src='js/build/affdex-edited-for-processing.js'></script>
+      <script src='js/affdex/affdex-edited-for-processing.js'></script>
       <script src='js/build/post-processing.js'></script>
     `,
   }

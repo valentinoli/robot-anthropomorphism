@@ -195,7 +195,7 @@ affdex.Detector = function() {
 affdex.Detector.prototype.start = function() {
   if (!this.isRunning) {
     // Edited by Valentin
-    var url = "./js/build/"//affdex.getAffdexDotJsLocation();
+    var url = "./js/affdex/"//affdex.getAffdexDotJsLocation();
     XHRWorker(url+"affdex-worker.js", function(worker) {
       this.worker = worker;
       this.worker.onmessage = this.onWorkerMessage;
@@ -243,7 +243,7 @@ affdex.CameraDetector = function(element, imgW, imgH, faceMode) {
   var docElement = element || document.createElement("div");
   var canvasElement = null;
   var canvasContext = null;
-  var adapterJSVersion = "./js/build/adapter-1.4.0.js";
+  var adapterJSVersion = "./js/affdex/adapter-1.4.0.js";
 
   self.faceDetectorMode = (typeof faceMode == 'undefined') ? affdex.FaceDetectorMode.LARGE_FACES : faceMode;
 

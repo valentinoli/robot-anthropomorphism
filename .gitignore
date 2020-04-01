@@ -1,4 +1,9 @@
 node_modules/
+.ipynb_checkpoints/
+
+# data files
 !python/data/example.txt
 python/data/*.txt
-.ipynb_checkpoints/
+
+# webpack js build
+public/js/build/

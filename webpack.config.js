@@ -1,7 +1,10 @@
 var path = require('path');
 
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
+
 module.exports = {
   mode: 'development',
+  devtool: 'inline-source-map',
   context: path.resolve(__dirname, 'public/js'),
   entry: {
     'webcam': './src/webcam.js',
@@ -24,5 +27,18 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  plugins: [
+	new BrowserSyncPlugin(
+      // BrowserSync options
+      {
+        // browse to http://localhost:3000/ during development
+        host: 'localhost',
+        port: 3000,
+        // proxy the Node.js endpoint
+        // through BrowserSync
+        proxy: 'http://localhost:8000/',
+      }
+    )
+  ]
 };
