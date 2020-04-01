@@ -1,5 +1,6 @@
 node_modules/
 .ipynb_checkpoints/
+.env
 
 # data files
 !python/data/example.txt

@@ -143,7 +143,7 @@ server.post('/', async (req, res) => {
   }
 })
 
-const { PORT } = process.env
+const PORT = process.env.PORT || 8000
 
 server.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`)
