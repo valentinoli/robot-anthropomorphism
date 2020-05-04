@@ -29,8 +29,6 @@ detector.addEventListener("onStopSuccess", () => console.log("The detector repor
 const results = [];
 const timestamps = [];
 
-const loadingEl = document.querySelector('.loading');
-
 // Add a callback to receive the results from processing an image.
 // The faces object contains the list of the faces detected in an image.
 // Faces object contains probabilities for all the different expressions, emotions and appearance metrics
@@ -100,6 +98,7 @@ function onStart() {
 // };
 
 function toggleLoading() {
+  const loadingEl = document.getElementById('loading');
   loadingEl.style.display = loadingEl.style.display === 'none' ? 'flex': 'none';
 }
 
