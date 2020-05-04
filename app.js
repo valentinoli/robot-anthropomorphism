@@ -136,7 +136,7 @@ server.post('/', async (req, res) => {
     // https://devcenter.heroku.com/articles/s3-upload-node
 
     console.log(`JSON string hashed to: ${hash}`)
-    return res.json({ data, hash, redirectUrl: `?id=${hash}` })
+    return res.json({ data: json, hash, /*redirectUrl: `?id=${hash}`*/ })
 
   } catch (err) {
     console.log(err)

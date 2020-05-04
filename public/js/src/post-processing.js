@@ -94,12 +94,12 @@ detector.addEventListener("onImageResultsSuccess", function(faces, image, timest
 
 function toggleLoading() {
   const loadingEl = document.getElementById('loading');
-  loadingEl.style.display = loadingEl.style.display === 'flex' ? 'none': 'flex';
+  loadingEl.style.display = window.getComputedStyle(loadingEl).display === 'flex' ? 'none': 'flex';
 }
 
 function togglePlot() {
   const plotDiv = document.getElementById('plot');
-  plotDiv.style.display = plotDiv.style.display === 'flex' ? 'none': 'flex';
+  plotDiv.style.display = window.getComputedStyle(plotDiv).display === 'flex' ? 'none': 'flex';
 }
 
 function showPlot(x, yValues) {

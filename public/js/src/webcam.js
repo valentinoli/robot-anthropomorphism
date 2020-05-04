@@ -80,26 +80,27 @@ function onStart() {
   }
 }
 
-// // https://stackoverflow.com/questions/21012580/is-it-possible-to-write-data-to-file-using-only-javascript
-// let textFile = null;
-// const makeTextFile = function (res) {
-//   const data = new Blob([res], {type: 'text/plain'});
-//
-//   // If we are replacing a previously generated file we need to
-//   // manually revoke the object URL to avoid memory leaks.
-//   if (textFile !== null) {
-//     window.URL.revokeObjectURL(textFile);
-//   }
-//
-//   textFile = window.URL.createObjectURL(data);
-//
-//   // returns a URL you can use as a href
-//   return textFile;
-// };
+// https://stackoverflow.com/questions/21012580/is-it-possible-to-write-data-to-file-using-only-javascript
+let textFile = null;
+const makeTextFile = function (res) {
+  const data = new Blob([res], {type: 'text/plain'});
+
+  // If we are replacing a previously generated file we need to
+  // manually revoke the object URL to avoid memory leaks.
+  if (textFile !== null) {
+    window.URL.revokeObjectURL(textFile);
+  }
+
+  textFile = window.URL.createObjectURL(data);
+
+  // returns a URL you can use as a href
+  return textFile;
+};
 
 function toggleLoading() {
   const loadingEl = document.getElementById('loading');
-  loadingEl.style.display = loadingEl.style.display === 'none' ? 'flex': 'none';
+  console.log(loadingEl.style.display);
+  loadingEl.style.display = window.getComputedStyle(loadingEl).display === 'none' ? 'flex': 'none';
 }
 
 //function executes when the Stop button is pushed.
@@ -110,6 +111,7 @@ function onStop() {
     // Post results to server and show loading state
     toggleLoading();
 
+    // Save results to text file
     fetch('/', {
       method: 'post',
       headers: {
@@ -126,31 +128,30 @@ function onStop() {
     })
     .then(res => res.json())
     .then(json => {
-      console.log(json);
-      const { redirectUrl } = json;
+      const { data } = json;
+      console.log(data);
       setTimeout(() => {
         toggleLoading();
-        window.location = redirectUrl;
+
+        // // 4 March 2020 - Valentin
+        // Write expression values to a text file
+        const link = document.createElement('a');
+        link.setAttribute('download', 'results.txt');
+        link.href = makeTextFile(data);
+        document.body.appendChild(link);
+
+        // wait for the link to be added to the document
+        window.requestAnimationFrame(function () {
+          const event = new MouseEvent('click');
+          link.dispatchEvent(event);
+          document.body.removeChild(link);
+        });
       }, 4000);
     })
     .catch(error => {
       toggleLoading();
       console.error(error);
     });
-
-    // // 4 March 2020 - Valentin
-    // // Write expression values to a text file
-    // const link = document.createElement('a');
-    // link.setAttribute('download', 'info.txt');
-    // link.href = makeTextFile(json);
-    // document.body.appendChild(link);
-    //
-    // // wait for the link to be added to the document
-    // window.requestAnimationFrame(function () {
-    //   const event = new MouseEvent('click');
-    //   link.dispatchEvent(event);
-    //   document.body.removeChild(link);
-    // });
   }
 };
 
