@@ -29,8 +29,6 @@ detector.addEventListener("onStopSuccess", () => console.log("The detector repor
 const results = [];
 const timestamps = [];
 
-const loadingEl = document.querySelector('.loading');
-
 // Add a callback to receive the results from processing an image.
 // The faces object contains the list of the faces detected in an image.
 // Faces object contains probabilities for all the different expressions, emotions and appearance metrics
@@ -82,25 +80,27 @@ function onStart() {
   }
 }
 
-// // https://stackoverflow.com/questions/21012580/is-it-possible-to-write-data-to-file-using-only-javascript
-// let textFile = null;
-// const makeTextFile = function (res) {
-//   const data = new Blob([res], {type: 'text/plain'});
-//
-//   // If we are replacing a previously generated file we need to
-//   // manually revoke the object URL to avoid memory leaks.
-//   if (textFile !== null) {
-//     window.URL.revokeObjectURL(textFile);
-//   }
-//
-//   textFile = window.URL.createObjectURL(data);
-//
-//   // returns a URL you can use as a href
-//   return textFile;
-// };
+// https://stackoverflow.com/questions/21012580/is-it-possible-to-write-data-to-file-using-only-javascript
+let textFile = null;
+const makeTextFile = function (res) {
+  const data = new Blob([res], {type: 'text/plain'});
+
+  // If we are replacing a previously generated file we need to
+  // manually revoke the object URL to avoid memory leaks.
+  if (textFile !== null) {
+    window.URL.revokeObjectURL(textFile);
+  }
+
+  textFile = window.URL.createObjectURL(data);
+
+  // returns a URL you can use as a href
+  return textFile;
+};
 
 function toggleLoading() {
-  loadingEl.style.display = loadingEl.style.display === 'none' ? 'flex': 'none';
+  const loadingEl = document.getElementById('loading');
+  console.log(loadingEl.style.display);
+  loadingEl.style.display = window.getComputedStyle(loadingEl).display === 'none' ? 'flex': 'none';
 }
 
 //function executes when the Stop button is pushed.
@@ -111,6 +111,7 @@ function onStop() {
     // Post results to server and show loading state
     toggleLoading();
 
+    // Save results to text file
     fetch('/', {
       method: 'post',
       headers: {
@@ -127,31 +128,30 @@ function onStop() {
     })
     .then(res => res.json())
     .then(json => {
-      console.log(json);
-      const { redirectUrl } = json;
+      const { data } = json;
+      console.log(data);
       setTimeout(() => {
         toggleLoading();
-        window.location = redirectUrl;
+
+        // // 4 March 2020 - Valentin
+        // Write expression values to a text file
+        const link = document.createElement('a');
+        link.setAttribute('download', 'results.txt');
+        link.href = makeTextFile(data);
+        document.body.appendChild(link);
+
+        // wait for the link to be added to the document
+        window.requestAnimationFrame(function () {
+          const event = new MouseEvent('click');
+          link.dispatchEvent(event);
+          document.body.removeChild(link);
+        });
       }, 4000);
     })
     .catch(error => {
       toggleLoading();
       console.error(error);
     });
-
-    // // 4 March 2020 - Valentin
-    // // Write expression values to a text file
-    // const link = document.createElement('a');
-    // link.setAttribute('download', 'info.txt');
-    // link.href = makeTextFile(json);
-    // document.body.appendChild(link);
-    //
-    // // wait for the link to be added to the document
-    // window.requestAnimationFrame(function () {
-    //   const event = new MouseEvent('click');
-    //   link.dispatchEvent(event);
-    //   document.body.removeChild(link);
-    // });
   }
 };
 

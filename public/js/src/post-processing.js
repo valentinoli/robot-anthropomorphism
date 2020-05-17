@@ -1,5 +1,6 @@
 // SDK Needs to create video and canvas nodes in the DOM in order to function
 // Here we are adding those nodes a predefined div.
+const announcementEl = document.getElementById("user-announcement");
 const divRoot = document.getElementById("affdexElements");
 const width = 640;
 const height = 480;
@@ -14,9 +15,10 @@ let timestamps = [];
 import videoNames from './video'
 
 function runNextVideo() {
+  // hide initial announcement
+  announcementEl.style.display = "none";
+
   if (detector && !detector.isRunning && videoNames.length > 0) {
-	divRoot.removeChild(divRoot.firstChild)
-	  
     // Run start() in affdex-edited-for-processing.js
     // Creates video element and canvas element + context
     // Returns the video element. Doesn't really start the detector.
@@ -92,12 +94,12 @@ detector.addEventListener("onImageResultsSuccess", function(faces, image, timest
 
 function toggleLoading() {
   const loadingEl = document.getElementById('loading');
-  loadingEl.style.display = loadingEl.style.display === 'flex' ? 'none': 'flex';
+  loadingEl.style.display = window.getComputedStyle(loadingEl).display === 'flex' ? 'none': 'flex';
 }
 
 function togglePlot() {
   const plotDiv = document.getElementById('plot');
-  plotDiv.style.display = plotDiv.style.display === 'flex' ? 'none': 'flex';
+  plotDiv.style.display = window.getComputedStyle(plotDiv).display === 'flex' ? 'none': 'flex';
 }
 
 function showPlot(x, yValues) {
