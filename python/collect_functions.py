@@ -8,17 +8,7 @@ from constants import *
 def collect_one_feature(vid_data, aggregate="mean"):
     """
     Description: Collects the features over time of one processed video 
-                     (stored in one json file)
-
-    Arguments: 
-    aggregate -- if not none, aggregates each features over time 
-                either by taking the mean or by taking the max
-    identifier -- data as json file
-
-    Outputs: 
-    If aggregate!=None return a single row containing the 
-             aggregated features over time, otherwise each row represents
-             a timestamp and each column is a feature
+    (stored in one json file)
     """
     expressions = vid_data["data"].get("expressions", None)
     
@@ -58,17 +48,8 @@ def collect_one_feature(vid_data, aggregate="mean"):
 
 def collect_features(video_data, aggregate="mean"):
     """
-    Description: 
-    Collects all features (stored in all the json files)
-                 from each processed videos and group them in a dataframe.
-                 
-    Arguments: 
-    aggregate -- the way we aggregate the facial features over
-               time, either mean or max
-               
-    Outputs: 
-    A dataframe where each row represents a processed 
-             video and each columns is a facial feature recorded during that video.
+    Collects all features aggregated over time,
+    from each processed videos (stored in one json file) and group them in a dataframe.
     """
 
     # one df per video
@@ -92,6 +73,7 @@ def collect_features(video_data, aggregate="mean"):
     
      
 def collect_answers(surveys_data, agg_survey):
+    """Collect all answers and store them in a dataframe"""
     def get_val(survey_data, name):
         # given the question name and data of a particular survey data, return its answered value
         for pair in survey_data:
@@ -117,6 +99,8 @@ def collect_answers(surveys_data, agg_survey):
     return result
 
 def extract_data(data, agg_survey=False, agg_features="mean"):
+    """Given raw data in a JSON format for one experiment, 
+    extract the video data, the answers data and the general data"""
     video_data = data["video"]
     survey_data = data["survey"]
     df_features = collect_features(video_data, agg_features)
@@ -125,24 +109,56 @@ def extract_data(data, agg_survey=False, agg_features="mean"):
     return df_features, df_answers, df_general
 
 
-def collect_time_series(feature_name):
-     # get data files
-    filenames = [y for x in os.walk(DATA_PATH) for y in glob(os.path.join(x[0], '*.json'))]
+            
+    
+def store_all_time_series(filenames, agg="sum"):
+    """Store for each pair (video_id, featre_name) a datframe
+    as returned by collect_time_series"""
+    
+    for video_id in np.arange(NB_VIDEOS):
+        for feature_name in FEATURES:
+            temp = collect_time_series(filenames, feature_name, str(video_id+1), agg=agg)
+            temp.to_csv(DATAFRAMES_PATH + "df_{0}_{1}.csv".format(feature_name,str(video_id+1)))
+            
+    
+def collect_time_series(filenames, feature_name, video_id, agg="sum"):
+    """Given a feature_name, and a video_id, collect in a dataframe the 
+    time series of this facial features for all users for that particular video.
+    The value for each timestamp is aggregated for each second"""
+    
+    nb_participants = len(filenames)
+
     time_series_list = []
     # process one file at a time
     for idx, file in enumerate(filenames):
         with open(file) as json_file:
-            data = json.load(json_file)
+            video_data = json.load(json_file)["video"][video_id]
             
-            # process videos one-by-one
-            for i in range(NB_VIDEOS):
-                df_videos.append(collect_one_feature(video_data[str(i+1)], aggregate=aggregate))
+        time_series_list.append((collect_one_feature(video_data, aggregate=None)[feature_name]))
+     
+    # for each time_serie, change index and resample
+    for idx, serie in enumerate(time_series_list):
+        #set index to be a timestamp
+        serie.index = pd.to_datetime(serie.index.values,unit="s")
+        # resample to have one value for each second, 
+        if agg == "sum":
+            serie = serie.resample(axis="index", rule="s").sum()
+        elif agg == "mean":
+            serie = serie.resample(axis="index", rule="s").mean()
+        else:
+            raise ValueError("Aggregator should be either sum or mean")
+        serie.index = serie.index.time
+        time_series_list[idx] = serie
         
-            
-            
-def collect_all(agg_survey=False, agg_features="mean"):
-    # get data files
-    filenames = [y for x in os.walk(DATA_PATH) for y in glob(os.path.join(x[0], '*.json'))]
+    result = pd.concat(time_series_list, axis=1, sort=False).T
+    result["user_id"] = np.arange(nb_participants)
+    result["video_id"] = video_id
+    result.set_index(["user_id","video_id"], inplace=True)
+    return result
+
+def store_all_df(filenames, agg_survey=False, agg_features="mean"):
+    """Calls extract_data for each file in filenames, 
+    and collect everything in dataframes and store them"""
     
     list_df_features = []
     list_df_answers = []
@@ -173,19 +189,8 @@ def collect_all(agg_survey=False, agg_features="mean"):
     df_final_answers.set_index(["user_id","video_id"], inplace=True)
     df_final_generals.set_index("user_id", inplace=True)
     
-    return df_final_features, df_final_answers, df_final_generals
+    df_final_features.to_csv(DATAFRAMES_PATH + "df_features_agg_max.csv")
+    df_final_answers.to_csv(DATAFRAMES_PATH + "df_answers.csv")
+    df_final_generals.to_csv(DATAFRAMES_PATH + "df_generals.csv")
 
 
-def collect_time_series(feature_name):
-    # get data files
-    filenames = [y for x in os.walk(DATA_PATH) for y in glob(os.path.join(x[0], '*.json'))]
-    time_series_list = []
-    # process one file at a time
-    for idx, file in enumerate(filenames):
-        with open(file) as json_file:
-            video_data = json.load(json_file)["video"]
-            
-            # process videos one-by-one
-            for i in range(NB_VIDEOS):
-                time_series_list.append((collect_one_feature(video_data[str(i+1)], aggregate=None)[feature_name]))
-    return np.array(time_series_list)

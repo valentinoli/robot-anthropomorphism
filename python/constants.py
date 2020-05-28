@@ -1,5 +1,7 @@
 # constants definition
 DATA_PATH = "data/"
+VIDEOS_PATH = DATA_PATH + "videos/"
+DATAFRAMES_PATH = DATA_PATH + "dataframes/"
 NB_VIDEOS = 3
 
 ANSWERS_DICT = {"i1":"fake/natural", "ii2":"stagnant/lively", "ii5":"inert/interactive", 
