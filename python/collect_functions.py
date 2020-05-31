@@ -15,6 +15,7 @@ def collect_one_feature(vid_data, aggregate="mean"):
     if expressions is None: # camera couldn't detect a face
         result = pd.DataFrame(-np.ones(len(FEATURES))).transpose()
         result.columns = FEATURES
+        result.drop(IGNORED_FEATURES,axis=1, inplace=True)
         result["nb_timestamps"] = 0
         # reorder the columns to have the nb_timestamps first
         columns_reorder = list(result.columns[-1:]) + list(result.columns[:-1])
@@ -24,7 +25,8 @@ def collect_one_feature(vid_data, aggregate="mean"):
     df_features = pd.DataFrame(expressions)
     df_features["time"] = vid_data["timestamps"]
     df_features.set_index("time", inplace=True)
-    
+    df_features.drop(IGNORED_FEATURES,axis=1, inplace=True)
+
     if aggregate is None:
         return df_features
     
@@ -116,7 +118,7 @@ def store_all_time_series(filenames, agg="sum"):
     as returned by collect_time_series"""
     
     for video_id in np.arange(NB_VIDEOS):
-        for feature_name in FEATURES:
+        for feature_name in CONSIDERED_FEATURES:
             temp = collect_time_series(filenames, feature_name, str(video_id+1), agg=agg)
             temp.to_csv(DATAFRAMES_PATH + "df_{0}_{1}.csv".format(feature_name,str(video_id+1)))
             

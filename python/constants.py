@@ -47,3 +47,10 @@ FEATURES = ['smile', 'innerBrowRaise', 'browRaise', 'browFurrow', 'noseWrinkle',
        'lipPress', 'lipSuck', 'mouthOpen', 'smirk', 'eyeClosure', 'attention',
        'lidTighten', 'jawDrop', 'dimpler', 'eyeWiden', 'cheekRaise',
        'lipStretch']
+
+IGNORED_FEATURES = ['attention', 'lidTighten', 'jawDrop', 'dimpler', 
+                    'eyeWiden', 'cheekRaise', 'lipStretch']
+
+CONSIDERED_FEATURES = ['smile', 'innerBrowRaise', 'browRaise', 'browFurrow', 'noseWrinkle',
+       'upperLipRaise', 'lipCornerDepressor', 'chinRaise', 'lipPucker',
+       'lipPress', 'lipSuck', 'mouthOpen', 'smirk', 'eyeClosure']
