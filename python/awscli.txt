@@ -1,0 +1,19 @@
+# Install AWS CLI
+https://pypi.org/project/awscli/
+
+# Configure AWS
+aws configure
+
+# List directories and files
+aws s3 ls s3://bucketeer-a8bc3620-012c-4a16-be48-3d17178aa6b8/
+
+# Fetch files recursively
+aws s3 cp s3://bucketeer-a8bc3620-012c-4a16-be48-3d17178aa6b8/data/ <local-path> --recursive
+
+# Deleting files recursively
+aws s3 rm s3://bucketeer-a8bc3620-012c-4a16-be48-3d17178aa6b8/data/ --recursive
+
+Credentials 
+AWS_ACCESS_KEY_ID=AKIAVVKH7VVUGTARM45N
+AWS_SECRET_ACCESS_KEY=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
+AWS_REGION=eu-west-1

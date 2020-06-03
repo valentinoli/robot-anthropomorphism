@@ -113,7 +113,7 @@ def extract_data(data, agg_survey=False, agg_features="mean"):
 
             
     
-def store_all_time_series(filenames, agg="sum"):
+def store_all_time_series(filenames, agg="mean"):
     """Store for each pair (video_id, featre_name) a datframe
     as returned by collect_time_series"""
     
@@ -123,7 +123,7 @@ def store_all_time_series(filenames, agg="sum"):
             temp.to_csv(DATAFRAMES_PATH + "df_{0}_{1}.csv".format(feature_name,str(video_id+1)))
             
     
-def collect_time_series(filenames, feature_name, video_id, agg="sum"):
+def collect_time_series(filenames, feature_name, video_id, agg="mean"):
     """Given a feature_name, and a video_id, collect in a dataframe the 
     time series of this facial features for all users for that particular video.
     The value for each timestamp is aggregated for each second"""
@@ -191,7 +191,7 @@ def store_all_df(filenames, agg_survey=False, agg_features="mean"):
     df_final_answers.set_index(["user_id","video_id"], inplace=True)
     df_final_generals.set_index("user_id", inplace=True)
     
-    df_final_features.to_csv(DATAFRAMES_PATH + "df_features_agg_max.csv")
+    df_final_features.to_csv(DATAFRAMES_PATH + "df_features_agg_" + agg_features + ".csv")
     df_final_answers.to_csv(DATAFRAMES_PATH + "df_answers.csv")
     df_final_generals.to_csv(DATAFRAMES_PATH + "df_generals.csv")
 
