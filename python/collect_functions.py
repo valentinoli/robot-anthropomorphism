@@ -5,11 +5,23 @@ import numpy as np
 from glob import glob
 from constants import *
 
+
 def collect_one_feature(vid_data, aggregate="mean"):
     """
     Description: Collects the features over time of one processed video 
     (stored in one json file)
     """
+    def get_slope(row):
+        """Given a row of a datafram representing a timeserie 
+        of the evolution of a facial feautre, compute the sum of positive
+        slope over all pair of consecutive timestamp"""
+        slope = 0
+        for i in np.arange(0,len(row)-2,2):
+            if row[i] < row[i+1]:
+                slope = slope + row[i+1]- row[i]
+        return slope
+    
+
     expressions = vid_data["data"].get("expressions", None)
     
     if expressions is None: # camera couldn't detect a face
@@ -26,7 +38,7 @@ def collect_one_feature(vid_data, aggregate="mean"):
     df_features["time"] = vid_data["timestamps"]
     df_features.set_index("time", inplace=True)
     df_features.drop(IGNORED_FEATURES,axis=1, inplace=True)
-
+    
     if aggregate is None:
         return df_features
     
@@ -36,6 +48,12 @@ def collect_one_feature(vid_data, aggregate="mean"):
 
     elif aggregate == "max":
         result = pd.DataFrame(df_features.max(axis=0)).transpose() 
+    
+    elif aggregate is "slope":
+        result = df_features.T
+        result.columns = range(len(result.columns))
+        result["slope"] = result.apply(lambda row:get_slope(row), axis=1)
+        result = pd.DataFrame(result["slope"]).T
    
     else:
         raise ValueError('aggregate parameter can only be "mean" or "max" (passed: {0})'.format(aggregate))
@@ -158,6 +176,10 @@ def collect_time_series(filenames, feature_name, video_id, agg="mean"):
     result.set_index(["user_id","video_id"], inplace=True)
     return result
 
+
+
+    
+    
 def store_all_df(filenames, agg_survey=False, agg_features="mean"):
     """Calls extract_data for each file in filenames, 
     and collect everything in dataframes and store them"""
