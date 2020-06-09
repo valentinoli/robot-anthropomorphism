@@ -114,13 +114,13 @@ def extract_data(data, agg_survey=False, agg_features="mean"):
             
     
 def store_all_time_series(filenames, agg="mean"):
-    """Store for each pair (video_id, featre_name) a datframe
+    """Store for each pair (video_id, feature_name) a dataframe
     as returned by collect_time_series"""
     
-    for video_id in np.arange(NB_VIDEOS):
+    for video_id in map(str, range(1, NB_VIDEOS + 1)):
         for feature_name in CONSIDERED_FEATURES:
-            temp = collect_time_series(filenames, feature_name, str(video_id+1), agg=agg)
-            temp.to_csv(DATAFRAMES_PATH + "df_{0}_{1}.csv".format(feature_name,str(video_id+1)))
+            temp = collect_time_series(filenames, feature_name, video_id, agg=agg)
+            temp.to_csv(DATAFRAMES_PATH + "df_{0}_{1}.csv".format(feature_name, video_id))
             
     
 def collect_time_series(filenames, feature_name, video_id, agg="mean"):
@@ -133,7 +133,7 @@ def collect_time_series(filenames, feature_name, video_id, agg="mean"):
     time_series_list = []
     # process one file at a time
     for idx, file in enumerate(filenames):
-        with open(file) as json_file:
+        with open(file, encoding="utf-8") as json_file:
             video_data = json.load(json_file)["video"][video_id]
             
         time_series_list.append((collect_one_feature(video_data, aggregate=None)[feature_name]))
@@ -169,8 +169,8 @@ def store_all_df(filenames, agg_survey=False, agg_features="mean"):
     
     # process one file at a time
     for idx, file in enumerate(filenames):
-        with open(file) as json_file:
-            data = json.load(json_file)
+        with open(file, encoding="utf-8") as json_file:
+            data = json.load(json_file, encoding="utf-8")
             df_features, df_answers, df_general = extract_data(data, agg_survey, agg_features)
             list_df_features.append(df_features)
             list_df_answers.append(df_answers)

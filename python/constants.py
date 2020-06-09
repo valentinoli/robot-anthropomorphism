@@ -10,7 +10,7 @@ ANSWERS_DICT = {"i1":"fake/natural", "ii2":"stagnant/lively", "ii5":"inert/inter
                    "ii6":"unresponsive/responsive", "iv5":"foolish/sensible", 
                    "iv2":"ignorant/knowledgeable", "i2":"machinelike/humanlike", 
                    "i4":"artificial/lifelike", "ii1":"dead/alive", "iii4":"unpleasant/pleasant",
-                   "i5":"ridig/smooth", "iii1":"dislike/like", "iv3":"irresponsible/responsible",
+                   "i5":"rigid/smooth", "iii1":"dislike/like", "iv3":"irresponsible/responsible",
                    "iii5":"awful/nice", "iii2":"unfriendly/friendly", "iii3":"unkind/kind"}
 
 ANSWERS_COLUMNS = ["fake/natural", "stagnant/lively", "inert/interactive", 
@@ -19,14 +19,14 @@ ANSWERS_COLUMNS = ["fake/natural", "stagnant/lively", "inert/interactive",
                    "unresponsive/responsive", "foolish/sensible", 
                    "ignorant/knowledgeable", "machinelike/humanlike", 
                    "artificial/lifelike", "dead/alive", "unpleasant/pleasant",
-                   "ridig/smooth", "dislike/like", "irresponsible/responsible",
+                   "rigid/smooth", "dislike/like", "irresponsible/responsible",
                    "awful/nice", "unfriendly/friendly", "unkind/kind"]
 
 NB_QUESTIONS = len(ANSWERS_COLUMNS)
 
 ANTHROPOMORPHISM_COLUMNS = ["fake/natural", "machinelike/humanlike", 
                             "unconscious/conscious", "artificial/lifelike",
-                            "ridig/smooth"]
+                            "rigid/smooth"]
 ANIMACY_COLUMNS = ["dead/alive", "stagnant/lively", "mechanical/organic",
                    "inert/interactive", "artificial/lifelike",
                    "unresponsive/responsive"]
